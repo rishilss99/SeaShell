@@ -15,10 +15,9 @@ int main() {
   std::string input;
   std::getline(std::cin, input);
 
-  if(supported_commands.find(input) == supported_commands.end())
+  while(supported_commands.find(input) == supported_commands.end())
   {
     std::cout << input << ": command not found\n";
-    std::exit(1);
   }
 
   return 0;
