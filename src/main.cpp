@@ -10,14 +10,20 @@ int main() {
   std::unordered_set<std::string> supported_commands;
 
   // Uncomment this block to pass the first stage
-  std::cout << "$ ";
-  
   std::string input;
-  std::getline(std::cin, input);
 
-  while(supported_commands.find(input) == supported_commands.end())
+  while (true)
   {
-    std::cout << input << ": command not found\n";
+    std::cout << "$ ";
+    std::getline(std::cin, input);
+    if (supported_commands.find(input) == supported_commands.end())
+    {
+      std::cout << input << ": command not found\n";
+    }
+    else
+    {
+      break;
+    }
   }
 
   return 0;
