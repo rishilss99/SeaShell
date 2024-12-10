@@ -3,14 +3,14 @@
 #include <sstream>
 #include <functional>
 #include <string_view>
-#include <unordered_set>
+#include <vector>
 #include <filesystem>
 
 // Supported commands
 std::unordered_map<std::string, std::function<void(std::stringstream &)>> supported_commands;
 
 // Supported Paths
-std::unordered_set<std::string> supported_paths;
+std::vector<std::string> supported_paths;
 
 void exitFn(std::stringstream &ss)
 {
@@ -57,7 +57,7 @@ void processPaths(std::string &&path_str)
   std::string path;
   while (getline(ss, path, ':'))
   {
-    supported_paths.insert(path);
+    supported_paths.push_back(path);
   }
 }
 
