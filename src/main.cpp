@@ -1,14 +1,30 @@
 #include <iostream>
-#include <unordered_set>
+#include <unordered_map>
 #include <sstream>
+#include <functional>
 
-int main() {
+void exitFn(std::stringstream &ss)
+{
+  int ret_val;
+  ss >> ret_val;
+  std::exit(ret_val);
+}
+
+void echoFn(std::stringstream &ss)
+{
+  std::string input_str;
+  getline(ss, input_str);
+  std::cout << input_str << "\n";
+}
+
+int main()
+{
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
   // Supported commands
-  std::unordered_set<std::string> supported_commands{"exit"};
+  std::unordered_map<std::string, std::function<void(std::stringstream &)>> supported_commands{{"exit", exitFn}, {"echo", echoFn}};
 
   // Uncomment this block to pass the first stage
   std::string input;
@@ -26,7 +42,7 @@ int main() {
     }
     else
     {
-      break;
+      supported_commands[command](ss);
     }
   }
 
