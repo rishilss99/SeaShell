@@ -3,6 +3,9 @@
 #include <sstream>
 #include <functional>
 
+// Supported commands
+std::unordered_map<std::string, std::function<void(std::stringstream &)>> supported_commands;
+
 void exitFn(std::stringstream &ss)
 {
   int ret_val;
@@ -18,14 +21,29 @@ void echoFn(std::stringstream &ss)
   std::cout << input_str << "\n";
 }
 
+void typeFn(std::stringstream &ss)
+{
+  std::string input_command;
+  ss >> input_command;
+  if (supported_commands.find(input_command) == supported_commands.end())
+  {
+    std::cout << input_command << " :not found\n";
+  }
+  else
+  {
+    std::cout << input_command << " is a shell builtin\n";
+  }
+}
+
 int main()
 {
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
-  // Supported commands
-  std::unordered_map<std::string, std::function<void(std::stringstream &)>> supported_commands{{"exit", exitFn}, {"echo", echoFn}};
+  supported_commands["exit"] = exitFn;
+  supported_commands["echo"] = echoFn;
+  supported_commands["type"] = typeFn;
 
   // Uncomment this block to pass the first stage
   std::string input;
