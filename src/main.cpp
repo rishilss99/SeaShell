@@ -13,11 +13,9 @@ void exitFn(std::stringstream &ss)
 void echoFn(std::stringstream &ss)
 {
   std::string input_str;
-  while (ss >> input_str)
-  {
-    std::cout << input_str << " ";
-  }
-  std::cout << "\n";
+  ss.get();
+  getline(ss, input_str);
+  std::cout << input_str << "\n";
 }
 
 int main()
