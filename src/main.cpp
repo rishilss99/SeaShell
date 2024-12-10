@@ -51,9 +51,9 @@ void typeFn(std::stringstream &ss)
   std::cout << input_command << ": not found\n";
 }
 
-void processPaths(std::string &&path_str)
+void processPath()
 {
-  std::stringstream ss(std::move(path_str));
+  std::stringstream ss(std::getenv("PATH"));
   std::string path;
   while (getline(ss, path, ':'))
   {
@@ -61,13 +61,8 @@ void processPaths(std::string &&path_str)
   }
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-  if (argc > 1)
-  {
-    processPaths(argv[1]);
-  }
-
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
@@ -75,6 +70,8 @@ int main(int argc, char *argv[])
   supported_commands["exit"] = exitFn;
   supported_commands["echo"] = echoFn;
   supported_commands["type"] = typeFn;
+
+  processPath();
 
   // Uncomment this block to pass the first stage
   std::string input;
