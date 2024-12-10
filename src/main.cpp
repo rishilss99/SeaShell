@@ -27,7 +27,7 @@ void typeFn(std::stringstream &ss)
   ss >> input_command;
   if (supported_commands.find(input_command) == supported_commands.end())
   {
-    std::cout << input_command << " :not found\n";
+    std::cout << input_command << ": not found\n";
   }
   else
   {
