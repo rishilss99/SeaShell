@@ -81,7 +81,6 @@ void forkAndExec(std::string &path, std::stringstream &ss)
     for(auto& st: str_args)
     {
         args.push_back(const_cast<char*>(st.c_str()));
-        std::cout << st << "\n";
     }
     args.push_back(nullptr);
     execv(path.c_str(), args.data());
