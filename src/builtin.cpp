@@ -59,7 +59,7 @@ void cdFn(std::stringstream &ss)
     getline(ss, start_path, '/');
     if(start_path.empty())
     {
-        iter_path == curr_path.root_path().string();
+        iter_path = curr_path.root_path().string();
     }
     else if(start_path == ".")
     {
