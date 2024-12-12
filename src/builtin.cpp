@@ -113,7 +113,8 @@ void cdFn(std::stringstream &ss)
     {
         ss.clear();
         ss.seekg(3);
-        std::cout << "cd: " << ss.str() << ": No such file or directory\n";   
+        ss >> file_path;
+        std::cout << "cd: " << file_path << ": No such file or directory\n";   
     }
     else
     {
