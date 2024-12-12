@@ -8,6 +8,9 @@ std::vector<std::string> supported_paths;
 // Supported commands
 std::unordered_map<std::string, std::function<void(std::stringstream &)>> supported_commands;
 
+// Current path
+std::filesystem::path curr_path = std::filesystem::current_path();
+
 int main()
 {
   // Flush after every std::cout / std:cerr
@@ -18,6 +21,7 @@ int main()
   supported_commands["echo"] = echoFn;
   supported_commands["type"] = typeFn;
   supported_commands["pwd"]  = pwdFn;
+  supported_commands["cd"]   = cdFn;
 
   processPath();
 
