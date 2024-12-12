@@ -44,6 +44,11 @@ void typeFn(std::stringstream &ss)
   std::cout << input_command << ": not found\n";
 }
 
+void pwdFn(std::stringstream &ss)
+{
+    std::cout << std::filesystem::current_path().string() << "\n";
+}
+
 bool checkIfSupportedCommand(std::string &command)
 {
     return (supported_commands.find(command) != supported_commands.end());

@@ -8,6 +8,8 @@ void echoFn(std::stringstream &ss);
 
 void typeFn(std::stringstream &ss);
 
+void pwdFn(std::stringstream &ss);
+
 bool checkIfSupportedCommand(std::string &command);
 
 void executeCommand(std::string &input);

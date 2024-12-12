@@ -17,6 +17,7 @@ int main()
   supported_commands["exit"] = exitFn;
   supported_commands["echo"] = echoFn;
   supported_commands["type"] = typeFn;
+  supported_commands["pwd"]  = pwdFn;
 
   processPath();
 
