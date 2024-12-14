@@ -23,11 +23,11 @@ void forkAndExec(std::string &path, std::stringstream &ss)
     {
       str_args.push_back(std::move(str));
     }
-    std::vector<char*> args;
-    args.push_back(const_cast<char*>(path.c_str()));
-    for(auto& st: str_args)
+    std::vector<char *> args;
+    args.push_back(const_cast<char *>(path.c_str()));
+    for (auto &st : str_args)
     {
-        args.push_back(const_cast<char*>(st.c_str()));
+      args.push_back(const_cast<char *>(st.c_str()));
     }
     args.push_back(nullptr);
     execv(path.c_str(), args.data());
@@ -54,5 +54,5 @@ bool checkIfPathExecutable(std::string &executable)
 
 void executeExecutable(std::string &command)
 {
-    std::system(command.c_str());
+  std::system(command.c_str());
 }

@@ -17,6 +17,20 @@ void exitFn(std::stringstream &ss)
 void echoFn(std::stringstream &ss)
 {
   std::string input_str;
+  auto start_pos = ss.tellg();
+  char start_char = ss.peek();
+  ss.seekg(-1, std::ios::end);
+  auto end_pos = ss.tellg();
+  char end_char = ss.peek();
+  auto remain_len = end_pos - start_pos + 1;
+  ss.seekg(start_pos);
+  if(remain_len > 1 && (start_char == '\'' && end_char == '\''))
+  {
+    ss.get();
+    getline(ss, input_str, '\'');
+    std::cout << input_str << "\n";
+    return;
+  }
   getline(ss, input_str);
   std::cout << input_str << "\n";
 }
@@ -25,14 +39,14 @@ void typeFn(std::stringstream &ss)
 {
   std::string input_command;
   ss >> input_command;
-  
+
   if (supported_commands.find(input_command) != supported_commands.end())
   {
     std::cout << input_command << " is a shell builtin\n";
     return;
   }
-  
-  for(auto path: supported_paths)
+
+  for (auto path : supported_paths)
   {
     path += "/" + input_command;
     if (std::filesystem::exists(path))
@@ -47,93 +61,95 @@ void typeFn(std::stringstream &ss)
 
 void pwdFn(std::stringstream &ss)
 {
-    std::cout << curr_path.string() << "\n";
+  std::cout << curr_path.string() << "\n";
 }
 
 void cdFn(std::stringstream &ss)
 {
 
-    std::string file_path; // Can be absolute or relative
-    std::string start_path;
-    std::string iter_path;
-    getline(ss, start_path, '/');
-    if(start_path.empty())
-    {
-        iter_path = curr_path.root_path().string();
-    }
-    else if(start_path == ".")
-    {
-        iter_path = curr_path.string();
-    }
-    else if(start_path == "~")
-    {
-        iter_path = std::getenv("HOME");
-    }
-    else if(start_path == "..")
-    {
-        iter_path = curr_path.parent_path().string();
-    }
+  std::string file_path; // Can be absolute or relative
+  std::string start_path;
+  std::string iter_path;
+  getline(ss, start_path, '/');
+  if (start_path.empty())
+  {
+    iter_path = curr_path.root_path().string();
+  }
+  else if (start_path == ".")
+  {
+    iter_path = curr_path.string();
+  }
+  else if (start_path == "~")
+  {
+    iter_path = std::getenv("HOME");
+  }
+  else if (start_path == "..")
+  {
+    iter_path = curr_path.parent_path().string();
+  }
 
-    std::stringstream iter_stream(iter_path);
-    std::vector<std::string> traversal_stack;
-    std::string iter_file;
-    while(getline(iter_stream, iter_file, '/'))
-    {
-        if(iter_file.empty())
-            continue;
-        traversal_stack.push_back(iter_file);
-    }
+  std::stringstream iter_stream(iter_path);
+  std::vector<std::string> traversal_stack;
+  std::string iter_file;
+  while (getline(iter_stream, iter_file, '/'))
+  {
+    if (iter_file.empty())
+      continue;
+    traversal_stack.push_back(iter_file);
+  }
 
-    while(getline(ss, iter_file, '/'))
+  while (getline(ss, iter_file, '/'))
+  {
+    if (iter_file.empty())
+      continue;
+    if (iter_file == ".")
+      continue;
+    if (iter_file == "..")
     {
-        if(iter_file.empty())
-            continue;
-        if(iter_file == ".")
-            continue;
-        if(iter_file == "..")
-        {
-            if(!traversal_stack.empty())
-            {
-                traversal_stack.pop_back();
-            }
-        }
-        else
-        {
-            traversal_stack.push_back(iter_file);
-        }
-    }
-
-    std::string final_path = (traversal_stack.empty()) ? "/" : "";
-    for(auto &path: traversal_stack)
-    {
-        final_path += "/" + path;
-    }
-
-    if(!std::filesystem::exists(final_path))
-    {
-        ss.clear();
-        ss.seekg(3);
-        ss >> file_path;
-        std::cout << "cd: " << file_path << ": No such file or directory\n";   
+      if (!traversal_stack.empty())
+      {
+        traversal_stack.pop_back();
+      }
     }
     else
     {
-        std::filesystem::current_path(final_path);
-        curr_path = std::filesystem::current_path();
+      traversal_stack.push_back(iter_file);
     }
+  }
 
+  std::string final_path = (traversal_stack.empty()) ? "/" : "";
+  for (auto &path : traversal_stack)
+  {
+    final_path += "/" + path;
+  }
+
+  if (!std::filesystem::exists(final_path))
+  {
+    ss.clear();
+    ss.seekg(3);
+    ss >> file_path;
+    std::cout << "cd: " << file_path << ": No such file or directory\n";
+  }
+  else
+  {
+    std::filesystem::current_path(final_path);
+    curr_path = std::filesystem::current_path();
+  }
 }
 
 bool checkIfSupportedCommand(std::string &command)
 {
-    return (supported_commands.find(command) != supported_commands.end());
+  return (supported_commands.find(command) != supported_commands.end());
 }
 
 void executeCommand(std::string &input)
 {
-    std::stringstream ss(input);
-    std::string command;
-    ss >> command;
-    ss.get(); // Process the whitespace after the command
+  std::stringstream ss(input);
+  std::string command;
+  ss >> command;
+  ss.get(); // Process the whitespace after the command
+  if (!ss.eof())
+  {
     supported_commands[command](ss);
+  }
 }
