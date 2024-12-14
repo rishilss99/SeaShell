@@ -31,8 +31,13 @@ void echoFn(std::stringstream &ss)
     std::cout << input_str << "\n";
     return;
   }
-  getline(ss, input_str);
-  std::cout << input_str << "\n";
+  ss >> input_str;
+  std::cout << input_str;
+  while(ss >> input_str)
+  {
+    std::cout << " " << input_str;
+  }
+  std::cout << "\n";
 }
 
 void typeFn(std::stringstream &ss)
