@@ -9,6 +9,10 @@ extern std::filesystem::path curr_path;
 
 void exitFn(std::stringstream &ss)
 {
+  if (ss.eof())
+  {
+    return;
+  }
   int ret_val;
   ss >> ret_val;
   std::exit(ret_val);
@@ -16,6 +20,10 @@ void exitFn(std::stringstream &ss)
 
 void echoFn(std::stringstream &ss)
 {
+  if (ss.eof())
+  {
+    return;
+  }
   std::string input_str;
   auto start_pos = ss.tellg();
   char start_char = ss.peek();
@@ -24,7 +32,7 @@ void echoFn(std::stringstream &ss)
   char end_char = ss.peek();
   auto remain_len = end_pos - start_pos + 1;
   ss.seekg(start_pos);
-  if(remain_len > 1 && (start_char == '\'' && end_char == '\''))
+  if (remain_len > 1 && (start_char == '\'' && end_char == '\''))
   {
     ss.get();
     getline(ss, input_str, '\'');
@@ -33,7 +41,7 @@ void echoFn(std::stringstream &ss)
   }
   ss >> input_str;
   std::cout << input_str;
-  while(ss >> input_str)
+  while (ss >> input_str)
   {
     std::cout << " " << input_str;
   }
@@ -153,8 +161,5 @@ void executeCommand(std::string &input)
   std::string command;
   ss >> command;
   ss.get(); // Process the whitespace after the command
-  if (!ss.eof())
-  {
-    supported_commands[command](ss);
-  }
+  supported_commands[command](ss);
 }
