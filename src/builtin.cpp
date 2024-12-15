@@ -18,6 +18,57 @@ void exitFn(std::stringstream &ss)
   std::exit(ret_val);
 }
 
+static std::vector<std::string> parseString(std::string &str)
+{
+  std::vector<std::string> output_str;
+  std::string temp_str = "";
+  auto pushToVec = [&output_str, &temp_str](){
+    if(temp_str.length())
+    {
+      output_str.push_back(temp_str);
+      temp_str.clear();
+    }
+  };
+  int idx = 0;
+  while(idx <= str.length())
+  {
+    char curr = (idx == str.size()) ? ' ': str[idx]; // If at the end, treat it as whitespace to save
+    if(curr == ' ')
+    {
+      pushToVec();
+      idx++;
+      continue;
+    }
+    else if(curr == '\'' || curr == '\"')
+    {
+      int itr = idx + 1;
+      bool found_complement = false; // Check if complement found, if not parse as normal character
+      while(itr < str.size())
+      {
+        if(str[itr] == curr)
+        {
+          found_complement = true;
+          break;
+        }
+        itr++;
+      }
+      if(found_complement)
+      {
+        for(int i = idx + 1; i < itr; i++)
+        {
+          temp_str.push_back(str[i]);
+        }
+        pushToVec();
+        idx = itr+1;  // If complement found, place idx next to the end of the iterator
+        continue;
+      }
+    }
+    temp_str.push_back(curr);
+    idx++;
+  }
+  return output_str;
+}
+
 void echoFn(std::stringstream &ss)
 {
   if (ss.eof())
@@ -25,25 +76,18 @@ void echoFn(std::stringstream &ss)
     return;
   }
   std::string input_str;
-  auto start_pos = ss.tellg();
-  char start_char = ss.peek();
-  ss.seekg(-1, std::ios::end);
-  auto end_pos = ss.tellg();
-  char end_char = ss.peek();
-  auto remain_len = end_pos - start_pos + 1;
-  ss.seekg(start_pos);
-  if (remain_len > 1 && (start_char == '\'' && end_char == '\''))
+  getline(ss, input_str);
+  auto string_vec = parseString(input_str);
+  for (int i = 0; i < string_vec.size(); i++)
   {
-    ss.get();
-    getline(ss, input_str, '\'');
-    std::cout << input_str << "\n";
-    return;
-  }
-  ss >> input_str;
-  std::cout << input_str;
-  while (ss >> input_str)
-  {
-    std::cout << " " << input_str;
+    if (i == 0)
+    {
+      std::cout << string_vec[i];
+    }
+    else
+    {
+      std::cout << " " << string_vec[i];
+    }
   }
   std::cout << "\n";
 }
