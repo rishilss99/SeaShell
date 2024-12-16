@@ -22,54 +22,90 @@ static std::vector<std::string> parseString(std::string &str)
 {
   std::vector<std::string> output_str;
   std::string temp_str = "";
-  auto pushToVec = [&output_str, &temp_str](){
-    if(temp_str.length())
+  auto pushToVec = [&output_str, &temp_str]()
+  {
+    if (temp_str.length())
     {
       output_str.push_back(temp_str);
       temp_str.clear();
     }
   };
-  int idx = 0;
-  while(idx <= str.length())
+
+  auto findComplement = [&str](int &itr, bool &found_complement, char curr )
   {
-    char curr = (idx == str.size()) ? ' ': str[idx]; // If at the end, treat it as whitespace to save
-    if(curr == '\\') // Non-quoted slash
+    while (itr < str.size())
     {
-      if(idx + 1 < str.size())
+      if (str[itr] == curr)
       {
-        temp_str.push_back(str[idx+1]);
-        idx+=2;
+        found_complement = true;
+        break;
+      }
+      itr++;
+    }
+  };
+  int idx = 0;
+  while (idx <= str.length())
+  {
+    char curr = (idx == str.size()) ? ' ' : str[idx]; // If at the end, treat it as whitespace to save
+    if (curr == '\\')                                 // Non-quoted slash
+    {
+      if (idx + 1 < str.size())
+      {
+        temp_str.push_back(str[idx + 1]);
+        idx += 2;
         continue;
       }
     }
-    else if(curr == ' ')
+    else if (curr == ' ')
     {
       pushToVec();
       idx++;
       continue;
     }
-    else if(curr == '\'' || curr == '\"')
+    else if (curr == '\'' || curr == '\"')
     {
       int itr = idx + 1;
       bool found_complement = false; // Check if complement found, if not parse as normal character
-      while(itr < str.size())
+      findComplement(itr, found_complement, curr);
+      if (found_complement)
       {
-        if(str[itr] == curr)
+        if (curr == '\'') // Handles backslash as literal
         {
-          found_complement = true;
-          break;
+          for (int i = idx + 1; i < itr; i++)
+          {
+            temp_str.push_back(str[i]);
+          }
+          pushToVec();
+          idx = itr + 1; // If complement found, place idx next to the end of the iterator
+          continue;
         }
-        itr++;
-      }
-      if(found_complement)
-      {
-        for(int i = idx + 1; i < itr; i++)
+        else if (curr == '\"') // Holds special meaning for backslash if followed by \,$,",newline
         {
-          temp_str.push_back(str[i]);
+          std::unordered_set<char> special_chars = {'\"', '\\', '$'};
+          if (str[itr - 1] == '\\')
+          {
+            int itr2 = itr + 1;
+            bool found_complement2 = false;
+            findComplement(itr2, found_complement2, curr);
+            if(found_complement2)
+            {
+              itr = itr2;
+            }
+          }
+          for (int i = idx + 1; i < itr; i++)
+          {
+            if (str[i] == '\\' && i + 1 < itr && special_chars.find(str[i+1]) != special_chars.end())
+            {
+              temp_str.push_back(str[i + 1]);
+              i++;
+              continue;
+            }
+            temp_str.push_back(str[i]);
+          }
+          pushToVec();
+          idx = itr + 1; // If complement found, place idx next to the end of the iterator
+          continue;
         }
-        pushToVec();
-        idx = itr+1;  // If complement found, place idx next to the end of the iterator
-        continue;
       }
     }
     temp_str.push_back(curr);
