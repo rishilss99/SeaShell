@@ -81,8 +81,7 @@ void executeQuotedExecutable(std::string &input)
   getline(ss, path, '\'');
   for (auto path : supported_paths)
   {
-    std::cout << path << "\n";
-    path += "'" + path + "'";
+    path += "/'" + path + "'";
     if (std::filesystem::exists(path))
     {
       std::cout << path;
