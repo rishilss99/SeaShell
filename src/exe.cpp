@@ -83,12 +83,15 @@ void executeQuotedExecutable(std::string &input)
   // ss >> rest;
   // std::string final_command = command + " " + rest;
   // std::system(final_command.c_str());
+  // File name with double quotes
   pid_t pid = fork();
-  std::vector<char *> args;
-  args.push_back("/tmp/bar/f1");
+  char *filename = "\'exe  with  space\'";
+
+  // Arguments for the executable
+  char *args[] = {filename, "/tmp/bar/f1", NULL};
   if (pid == 0)
   {
-    execv("\'exe  with  space\'", args.data());
+    execv("filename", args);
   }
   else
   {
