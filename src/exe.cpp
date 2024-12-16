@@ -88,7 +88,7 @@ void executeQuotedExecutable(std::string &input)
   args.push_back("/tmp/bar/f1");
   if (pid == 0)
   {
-    execv("R'exe  with  space'", args.data());
+    execv("\'exe  with  space\'", args.data());
   }
   else
   {
