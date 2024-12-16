@@ -81,21 +81,21 @@ void executeQuotedExecutable(std::string &input)
   // getline(ss, command, '\'');
   // std::string rest;
   // ss >> rest;
-  // std::string final_command = command + " " + rest;
-  // std::system(final_command.c_str());
+  std::string final_command = "./'exe  with  space' /tmp/foo/f1";
+  std::system(final_command.c_str());
   // File name with double quotes
-  pid_t pid = fork();
-  char *filename = "\'exe  with  space\'";
+  // pid_t pid = fork();
+  // char *filename = "\'exe  with  space\'";
 
-  // Arguments for the executable
-  char *args[] = {filename, "/tmp/bar/f1", NULL};
-  if (pid == 0)
-  {
-    execv("filename", args);
-  }
-  else
-  {
-    wait(nullptr);
-  }
-  return;
+  // // Arguments for the executable
+  // char *args[] = {filename, "/tmp/bar/f1", NULL};
+  // if (pid == 0)
+  // {
+  //   execv("filename", args);
+  // }
+  // else
+  // {
+  //   wait(nullptr);
+  // }
+  // return;
 }
