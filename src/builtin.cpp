@@ -35,9 +35,9 @@ static std::vector<std::string> parseString(std::string &str)
     char curr = (idx == str.size()) ? ' ': str[idx]; // If at the end, treat it as whitespace to save
     if(curr == '\\') // Non-quoted slash
     {
-      if(idx + 1 < str.size() && str[idx+1] == ' ')
+      if(idx + 1 < str.size())
       {
-        temp_str.push_back(' ');
+        temp_str.push_back(str[idx+1]);
         idx+=2;
         continue;
       }
