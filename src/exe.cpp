@@ -61,7 +61,16 @@ bool checkIfQuotedExecutable(std::string &input)
     {
       if (input[itr] == curr)
       {
-        return true;
+        std::string executable = input.substr(1, itr - 1);
+        for (auto path : supported_paths)
+        {
+          path += "/" + curr + executable + curr;
+          if (std::filesystem::exists(std::filesystem::absolute(path)))
+            ;
+          {
+            return true;
+          }
+        }
       }
     }
   }
@@ -73,15 +82,75 @@ void executeExecutable(std::string &command)
   std::system(command.c_str());
 }
 
+static std::string parseString(std::string &str)
+{
+  std::string temp_str = "";
+  auto findComplement = [&str](int &itr, bool &found_complement, char curr)
+  {
+    while (itr < str.size())
+    {
+      if (str[itr] == curr)
+      {
+        found_complement = true;
+        break;
+      }
+      itr++;
+    }
+  };
+  int idx = 0;
+  char curr = str[idx];
+  int itr = idx + 1;
+  bool found_complement = false; // Check if complement found, if not parse as normal character
+  findComplement(itr, found_complement, curr);
+  temp_str.push_back(curr);
+  if (found_complement)
+  {
+    if (curr == '\'') // Handles backslash as literal
+    {
+      for (int i = idx + 1; i < itr; i++)
+      {
+        temp_str.push_back(str[i]);
+      }
+    }
+    else if (curr == '\"') // Holds special meaning for backslash if followed by \,$,",newline
+    {
+      std::unordered_set<char> special_chars = {'\"', '\\', '$'};
+      if (str[itr - 1] == '\\')
+      {
+        int itr2 = itr + 1;
+        bool found_complement2 = false;
+        findComplement(itr2, found_complement2, curr);
+        if (found_complement2)
+        {
+          itr = itr2;
+        }
+      }
+      for (int i = idx + 1; i < itr; i++)
+      {
+        if (str[i] == '\\' && i + 1 < itr && special_chars.find(str[i + 1]) != special_chars.end())
+        {
+          temp_str.push_back(str[i + 1]);
+          i++;
+          continue;
+        }
+        temp_str.push_back(str[i]);
+      }
+    }
+  }
+  temp_str.push_back(curr);
+  return temp_str;
+}
+
 void executeQuotedExecutable(std::string &input)
 {
+  std::string executable = parseString(input);
   std::stringstream ss(input);
-  std::string path;
-  std::string orig_path;
   std::string args;
-  getline(ss, orig_path, '\'');
-  getline(ss, orig_path, '\'');
-  ss >> args;
-  path = "'" + orig_path + "' "  + args;
+  char quote = ss.get();
+  getline(ss, args, quote);
+  ss.get();
+  getline(ss, args);
+  std::string path = executable + " " + args;
   std::system(path.c_str());
+  return;
 }
