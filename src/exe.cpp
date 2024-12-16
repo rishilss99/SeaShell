@@ -84,7 +84,7 @@ void executeQuotedExecutable(std::string &input)
   for (auto path : supported_paths)
   {
     path = "." + path + "/'" + orig_path + "' " + args;
-    std::system(command.c_str());
+    std::system(path.c_str());
     break;
   }
 }
