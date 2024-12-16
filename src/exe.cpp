@@ -83,8 +83,14 @@ void executeQuotedExecutable(std::string &input)
   ss >> args;
   for (auto path : supported_paths)
   {
-    path = "." + path + "/'" + orig_path + "' " + args;
-    std::system(path.c_str());
-    break;
+    path = path + "/'" + orig_path + "'";
+    if(std::filesystem::exists(path))
+    {
+      std::cout << "Found path" << "\n";
+    }
+    else
+    {
+      std::cout << path << "\n";
+    } 
   }
 }
