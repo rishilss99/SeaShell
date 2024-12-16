@@ -33,7 +33,16 @@ static std::vector<std::string> parseString(std::string &str)
   while(idx <= str.length())
   {
     char curr = (idx == str.size()) ? ' ': str[idx]; // If at the end, treat it as whitespace to save
-    if(curr == ' ')
+    if(curr == '\\') // Non-quoted slash
+    {
+      if(idx + 1 < str.size() && str[idx+1] == ' ')
+      {
+        temp_str.push_back(' ');
+        idx+=2;
+        continue;
+      }
+    }
+    else if(curr == ' ')
     {
       pushToVec();
       idx++;
