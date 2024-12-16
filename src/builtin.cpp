@@ -75,7 +75,6 @@ static std::vector<std::string> parseString(std::string &str)
           {
             temp_str.push_back(str[i]);
           }
-          pushToVec();
           idx = itr + 1; // If complement found, place idx next to the end of the iterator
           continue;
         }
@@ -102,7 +101,6 @@ static std::vector<std::string> parseString(std::string &str)
             }
             temp_str.push_back(str[i]);
           }
-          pushToVec();
           idx = itr + 1; // If complement found, place idx next to the end of the iterator
           continue;
         }
