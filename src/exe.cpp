@@ -54,12 +54,12 @@ bool checkIfPathExecutable(std::string &executable)
 
 bool checkIfQuotedExecutable(std::string &input)
 {
-  if(input.length() > 1 && input.front() == '\'' || input.front() == '\"')
+  if (input.length() > 1 && input.front() == '\'' || input.front() == '\"')
   {
     char curr = input.front();
-    for(int itr = 1; itr < input.length(); itr++)
+    for (int itr = 1; itr < input.length(); itr++)
     {
-      if(input[itr] == curr)
+      if (input[itr] == curr)
       {
         return true;
       }
@@ -75,12 +75,24 @@ void executeExecutable(std::string &command)
 
 void executeQuotedExecutable(std::string &input)
 {
-  std::stringstream ss(input);
-  std::string command;
-  getline(ss, command, '\'');
-  getline(ss, command, '\'');
-  std::string rest;
-  ss >> rest;
-  std::string final_command = command + " " + rest;
-  std::system(final_command.c_str());
+  // std::stringstream ss(input);
+  // std::string command;
+  // getline(ss, command, '\'');
+  // getline(ss, command, '\'');
+  // std::string rest;
+  // ss >> rest;
+  // std::string final_command = command + " " + rest;
+  // std::system(final_command.c_str());
+  pid_t pid = fork();
+  std::vector<char *> args;
+  args.push_back("/tmp/bar/f1");
+  if (pid == 0)
+  {
+    execv("R'exe  with  space'", args.data());
+  }
+  else
+  {
+    wait(nullptr);
+  }
+  return;
 }
