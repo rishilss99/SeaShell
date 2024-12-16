@@ -75,6 +75,6 @@ void executeExecutable(std::string &command)
 
 void executeQuotedExecutable(std::string &input)
 {
-  std::string final_command = ("./'exe  with  space' /tmp/qux/f1");
+  std::string final_command = ("./tmp/qux/'exe  with  space' /tmp/qux/f1");
   std::system(final_command.c_str());
 }
