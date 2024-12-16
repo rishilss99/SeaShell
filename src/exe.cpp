@@ -75,6 +75,17 @@ void executeExecutable(std::string &command)
 
 void executeQuotedExecutable(std::string &input)
 {
-  std::string final_command = ("./tmp/qux/'exe  with  space' /tmp/qux/f1");
-  std::system(final_command.c_str());
+  std::stringstream ss(input);
+  std::string path;
+  getline(ss, path, '\'');
+  getline(ss, path, '\'');
+  for (auto path : supported_paths)
+  {
+    path += "'" + path + "'";
+    if (std::filesystem::exists(path))
+    {
+      std::cout << path;
+    }
+  }
+  std::cout << "no path:" << path << "\n";
 }
