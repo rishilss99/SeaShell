@@ -77,16 +77,14 @@ void executeQuotedExecutable(std::string &input)
 {
   std::stringstream ss(input);
   std::string orig_path;
+  std::string args;
   getline(ss, orig_path, '\'');
   getline(ss, orig_path, '\'');
+  ss >> args;
   for (auto path : supported_paths)
   {
-    path += "/'" + orig_path + "'";
-    std::cout << path << "\n";
-    if (std::filesystem::exists(path))
-    {
-      std::cout << path;
-    }
+    path = path + "/'" + orig_path + "' " + args;
+    std::cout << path;
+    break;
   }
-  std::cout << "no path: " << orig_path << "\n";
 }
