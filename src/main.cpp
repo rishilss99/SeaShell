@@ -43,6 +43,10 @@ int main()
     {
       executeExecutable(input);
     }
+    else if (checkIfQuotedExecutable(input))
+    {
+      executeQuotedExecutable(input);
+    }
     else
     {
       std::cout << input << ": command not found\n";

@@ -52,7 +52,35 @@ bool checkIfPathExecutable(std::string &executable)
   return false;
 }
 
+bool checkIfQuotedExecutable(std::string &input)
+{
+  if(input.length() > 1 && input.front() == '\'' || input.front() == '\"')
+  {
+    char curr = input.front();
+    for(int itr = 1; itr < input.length(); itr++)
+    {
+      if(input[itr] == curr)
+      {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 void executeExecutable(std::string &command)
 {
   std::system(command.c_str());
+}
+
+void executeQuotedExecutable(std::string &input)
+{
+  std::stringstream ss(input);
+  std::string command;
+  getline(ss, command, '\'');
+  getline(ss, command, '\'');
+  std::string rest;
+  ss >> rest;
+  std::string final_command = command + " " + rest;
+  std::system(final_command.c_str());
 }
